@@ -92,7 +92,9 @@ public class Main {
 	}
 	
 	public static void printLadder(ArrayList<String> ladder) {
-		
+		for (int i=0;i<ladder.size();i++){
+			System.out.println(ladder.get(i));
+		}
 	}
 	// TODO
 	// Other private static methods here
