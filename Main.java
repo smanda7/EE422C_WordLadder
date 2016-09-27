@@ -51,7 +51,13 @@ public class Main {
 	 * If command is /quit, return empty ArrayList. 
 	 */
 	public static ArrayList<String> parse(Scanner keyboard) {
-		// TO DO
+		//Create the ArrayLIst to store user input
+
+		ArrayList<String> userInput = new ArrayList();
+		String input = keyboard.nextLine(); //get keyboard input
+		userInput.add(input);  
+
+		return userInput;
 		return null;
 	}
 	
