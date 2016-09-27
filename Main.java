@@ -3,9 +3,9 @@
  * Siva Manda
  * sm48525
  * 16480
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Clement Pardon
+ * cp34735
+ * 16460
  * Slip days used: <0>
  * Git URL: https://github.com/smanda7/EE422C_WordLadder
  * Fall 2016
