@@ -51,14 +51,22 @@ public class Main {
 	 * If command is /quit, return empty ArrayList. 
 	 */
 	public static ArrayList<String> parse(Scanner keyboard) {
-		//Create the ArrayLIst to store user input
-
-		ArrayList<String> userInput = new ArrayList();
-		String input = keyboard.nextLine(); //get keyboard input
-		userInput.add(input);  
-
-		return userInput;
-		return null;
+		String in = keyboard.nextLine();	
+		String word1 = "";
+		String word2 = "";
+		boolean spacefound=false;
+		for (int i=0;i<in.length();i++){
+			if((in.charAt(i)!=' ')&&(in.charAt(i)!='\t')){
+				if (!spacefound)
+					word1 += in.charAt(i);
+				else
+					word2 += in.charAt(i);
+			}else
+				spacefound = true;
+		}
+		ArrayList<String> output = new ArrayList<String>();
+		output.add(word1); output.add(word2);
+		return output;
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
