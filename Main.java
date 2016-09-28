@@ -19,6 +19,7 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
+	ArrayList<String> discovered = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -90,7 +91,7 @@ public class Main {
 		
 	    	ArrayList<String> ladder = new ArrayList;
 	    	boolean done = false;
-		ladder.add(start); 
+		//ladder.add(start); 
 	    	
 	    	/*
 		* BFS starting at word start as source node
@@ -104,11 +105,22 @@ public class Main {
 		* Ex: Queue<Stack> 
 		*/
 	    	
+	    	//create stacks to push and pop words from
+	    	Stack bfsStack = new Stack();
+	    	Stack temp_stack = new Stack();
+	    
+	    	// Create Queue to keep track of BFS tree and words 
+	    	Queue<Stack> bfsQueue = new Queue<Stack>; 
+	    	
+	    	bfsStack.push(start);
+	    	bfsQueue.enqueue(bfsStack);
+	    	discovered.add(start);
+	    	
 	    	//Need to use queue to track elements of BFS
 		Set<String> dict = makeDictionary();
 		// TODO more code
 		
-	    	ladder.add(end);
+	    	//ladder.add(end);
 		return null; // replace this line later with real return
 	}
     
