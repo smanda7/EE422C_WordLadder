@@ -128,10 +128,17 @@ public class Main {
 		return words;
 	}
 	
-	public static void printLadder(ArrayList<String> ladder) {
-		System.out.println("This is the word ladder : ");
-		for (int i = 0; i<ladder.size;i++)
-			System.out.println(ladder.get(i));
+	public static void printLadder(ArrayList<String> ladder, String start, String end) {
+		int ladderLength = ladder.size();
+		if (ladderLength < 2){
+			System.out.println("no word ladder can be found between " + start +" and " end".");
+		}
+		else{
+			System.out.println("This is the word ladder : ");
+			for (int i = 0; i<ladder.size;i++){
+				System.out.println(ladder.get(i));
+			}
+		}
 	}
 	// TODO
 	// Other private static methods here
