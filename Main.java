@@ -89,7 +89,7 @@ public class Main {
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> ladder = new ArrayList;
+	    	ArrayList<String> found = new ArrayList;
 	    	boolean done = false;
 		//ladder.add(start); 
 	    	
@@ -115,13 +115,34 @@ public class Main {
 	    	bfsStack.push(start);
 	    	bfsQueue.enqueue(bfsStack);
 	    	discovered.add(start);
-	    	
-	    	//Need to use queue to track elements of BFS
+	    
 		Set<String> dict = makeDictionary();
 		// TODO more code
+	    	
+	    	//while Queue is not empty 
+	    	while (!done && !bfsQueue.isEmpty()){
+			
+			//Remove the head of the queue
+			temp_stack = bfsQueue.dequeue();
+			
+			/*
+			IF head == value, return found.
+			IF head has been visited: {
+				discard the head.
+				go back to start of while loop.
+			}
+			ELSE {
+				mark head visited.
+				FOR EACH neighbor of head
+					IF neighbor has not been visited
+						mark neighbor's parent to be head (if parent != null)
+						add neighbor to queue.
+			*/
+	}
+
 		
 	    	//ladder.add(end);
-		return null; // replace this line later with real return
+		return found; // replace this line later with real return
 	}
     
 	public static Set<String>  makeDictionary () {
