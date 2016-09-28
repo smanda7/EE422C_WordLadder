@@ -58,12 +58,16 @@ public class Main {
 		boolean spacefound=false;
 		for (int i=0;i<in.length();i++){
 			if((in.charAt(i)!=' ')&&(in.charAt(i)!='\t')){
-				if (!spacefound)
+				if (!spacefound){
 					word1 += in.charAt(i);
-				else
+				}
+				else{
 					word2 += in.charAt(i);
-			}else
+				}
+			}
+			else{
 				spacefound = true;
+			}
 		}
 		ArrayList<String> output = new ArrayList<String>();
 		output.add(word1); 
@@ -87,6 +91,18 @@ public class Main {
 	    	ArrayList<String> ladder = new ArrayList;
 	    	boolean done = false;
 		ladder.add(start); 
+	    	
+	    	/*
+		* BFS starting at word start as source node
+		* Build tree with dictionary words by changing one letter at a time
+		* Adding children nodes
+		* Mark nodes/words as discovered when traversing through tree
+		* End word should be a leaf node that does not require more children
+		* If reach a dead end, go back to last valid parent node and explore different path
+		* Number of levels in tree to get to end word is the length of our word ladder
+		* Use a queue to keep track of words and check them 
+		* Ex: Queue<Stack> 
+		*/
 	    	
 	    	//Need to use queue to track elements of BFS
 		Set<String> dict = makeDictionary();
