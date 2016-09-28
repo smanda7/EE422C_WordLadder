@@ -43,6 +43,7 @@ public class Main {
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
 		String [] array1; 
+		
 	}
 	
 	/**
@@ -65,7 +66,8 @@ public class Main {
 				spacefound = true;
 		}
 		ArrayList<String> output = new ArrayList<String>();
-		output.add(word1); output.add(word2);
+		output.add(word1); 
+		output.add(word2);
 		return output;
 	}
 	
@@ -82,10 +84,15 @@ public class Main {
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-		// TODO some code
+	    	ArrayList<String> ladder = new ArrayList;
+	    	boolean done = false;
+		ladder.add(start); 
+	    	
+	    	//Need to use queue to track elements of BFS
 		Set<String> dict = makeDictionary();
 		// TODO more code
 		
+	    	ladder.add(end);
 		return null; // replace this line later with real return
 	}
     
