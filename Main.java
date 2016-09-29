@@ -19,12 +19,14 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
-	ArrayList<String> discovered = new ArrayList<String>();
+	static Scanner kb;	// input Scanner for commands
+	static PrintStream ps;	// output file
+	static String[] dict;
+	static List<Integer>[] adjList;
+	static ArrayList<String> discovered = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
-		Scanner kb;	// input Scanner for commands
-		PrintStream ps;	// output file
 		// If arguments are specified, read/write from/to files instead of Std IO.
 		if (args.length != 0) {
 			kb = new Scanner(new File(args[0]));
@@ -43,12 +45,38 @@ public class Main {
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
-		String [] array1; 
-		
+		Set<String> st = makeDictionary();
+		dict = st.toArray(new String[st.size()]);
+		int s = dict.length;
+		adjList = new ArrayList[s];
+		// TODO more code
+		for (int i=0;i<s;i++){
+			for (int j=i;j<s;j++){
+				if (linked(dict[i],dict[j])){
+					adjList[i].add(j);
+					adjList[j].add(i);
+				}
+			}
+		}
+	}
+	/**
+	 * Simply returns if two words are different by only one letter
+	 * @param w1 first word to compare
+	 * @param w2 second word to compare
+	 * @return boolean
+	 */
+	private static boolean linked(String w1, String w2){
+		int i;
+		for (i=0;i<w1.length();i++){
+			if (w1.charAt(i) !=w2.charAt(i)){
+				i++;
+			}
+		}
+		return i==1;
 	}
 	
 	/**
-	 * @param keyboard Scanner connected to System.in
+	 * @param keyboard Scanner connected to the input (System.in most of the time)
 	 * @return ArrayList of 2 Strings containing start word and end word. 
 	 * If command is /quit, return empty ArrayList. 
 	 */
@@ -81,15 +109,13 @@ public class Main {
 		// Returned list should be ordered start to end.  Include start and end.
 		// Return empty list if no ladder.
 		// TODO some code
-		Set<String> dict = makeDictionary();
-		// TODO more code
 		
 		return null; // replace this line later with real return
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> found = new ArrayList;
+	    	ArrayList<String> found = new ArrayList<String>();
 	    	boolean done = false;
 		//ladder.add(start); 
 	    	
@@ -110,10 +136,10 @@ public class Main {
 	    	Stack temp_stack = new Stack();
 	    
 	    	// Create Queue to keep track of BFS tree and words 
-	    	Queue<Stack> bfsQueue = new Queue<Stack>; 
+	    	Queue<Stack> bfsQueue = new LinkedList<Stack>; 
 	    	
 	    	bfsStack.push(start);
-	    	bfsQueue.enqueue(bfsStack);
+	    	bfsQueue.offer(bfsStack);
 	    	discovered.add(start);
 	    
 		Set<String> dict = makeDictionary();
@@ -123,7 +149,7 @@ public class Main {
 	    	while (!done && !bfsQueue.isEmpty()){
 			
 			//Remove the head of the queue
-			temp_stack = bfsQueue.dequeue();
+			temp_stack = bfsQueue.poll();
 			
 			/*
 			IF head == value, return found.
@@ -163,7 +189,7 @@ public class Main {
 	
 	public static void printLadder(ArrayList<String> ladder) {
 		System.out.println("This is the word ladder : ");
-		for (int i = 0; i<ladder.size;i++)
+		for (int i = 0; i<ladder.size();i++)
 			System.out.println(ladder.get(i));
 	}
 	// TODO
