@@ -19,6 +19,7 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
+	ArrayList<String> discovered = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -88,9 +89,9 @@ public class Main {
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> ladder = new ArrayList;
+	    	ArrayList<String> found = new ArrayList;
 	    	boolean done = false;
-		ladder.add(start); 
+		//ladder.add(start); 
 	    	
 	    	/*
 		* BFS starting at word start as source node
@@ -104,12 +105,44 @@ public class Main {
 		* Ex: Queue<Stack> 
 		*/
 	    	
-	    	//Need to use queue to track elements of BFS
+	    	//create stacks to push and pop words from
+	    	Stack bfsStack = new Stack();
+	    	Stack temp_stack = new Stack();
+	    
+	    	// Create Queue to keep track of BFS tree and words 
+	    	Queue<Stack> bfsQueue = new Queue<Stack>; 
+	    	
+	    	bfsStack.push(start);
+	    	bfsQueue.enqueue(bfsStack);
+	    	discovered.add(start);
+	    
 		Set<String> dict = makeDictionary();
 		// TODO more code
+	    	
+	    	//while Queue is not empty 
+	    	while (!done && !bfsQueue.isEmpty()){
+			
+			//Remove the head of the queue
+			temp_stack = bfsQueue.dequeue();
+			
+			/*
+			IF head == value, return found.
+			IF head has been visited: {
+				discard the head.
+				go back to start of while loop.
+			}
+			ELSE {
+				mark head visited.
+				FOR EACH neighbor of head
+					IF neighbor has not been visited
+						mark neighbor's parent to be head (if parent != null)
+						add neighbor to queue.
+			*/
+	}
+
 		
-	    	ladder.add(end);
-		return null; // replace this line later with real return
+	    	//ladder.add(end);
+		return found; // replace this line later with real return
 	}
     
 	public static Set<String>  makeDictionary () {
@@ -128,17 +161,10 @@ public class Main {
 		return words;
 	}
 	
-	public static void printLadder(ArrayList<String> ladder, String start, String end) {
-		int ladderLength = ladder.size();
-		if (ladderLength < 2){
-			System.out.println("no word ladder can be found between " + start +" and " end".");
-		}
-		else{
-			System.out.println("This is the word ladder : ");
-			for (int i = 0; i<ladder.size;i++){
-				System.out.println(ladder.get(i));
-			}
-		}
+	public static void printLadder(ArrayList<String> ladder) {
+		System.out.println("This is the word ladder : ");
+		for (int i = 0; i<ladder.size;i++)
+			System.out.println(ladder.get(i));
 	}
 	// TODO
 	// Other private static methods here
