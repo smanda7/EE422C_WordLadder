@@ -24,6 +24,7 @@ public class Main {
 	static String[] dict;
 	static List<Integer>[] adjList;
 	static ArrayList<String> discovered = new ArrayList<String>();
+	static Stack<String> DFSStack = new Stack<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -118,17 +119,29 @@ public class Main {
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		ArrayList current = new ArrayList<String>();
-		discovered.add(start);
+		DFSStack.clear();
+		discovered.clear();
+		recDFS(start, end);
+		
+		return DFSStack.toArray().reverse(); // replace this line later with real return
+	}
+	
+	public static void recDFS (String start,String end) {
+		DFSStack.push(start);
 		if (start.equals(end)){
-			current.add(end);
-		} else {
-			String next = findNext(start);
-			if (!next.equals(""))
-				current.addAll(getWordLadderDFS(next,end));
+			DFSStack.push(end);
 		}
-			
-		return current; // replace this line later with real return
+		else if (DFSStack.empty()){
+			//do nothing
+		}
+		else if (deadEnd(start)){
+			discovered.add(DFSStack.pop());
+			recDFS(DFSStack.pop(), end);
+		}
+		else{
+			discovered.add(start);
+			recDFS(findNext(start), end);
+		}	
 	}
 	
 	public static String findNext(String start){
