@@ -19,7 +19,7 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
-	ArrayList<String> discovered = new ArrayList<String>();
+	static ArrayList<String> discovered = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -89,7 +89,7 @@ public class Main {
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> found = new ArrayList;
+	    	ArrayList<String> found = new ArrayList<String>();
 	    	boolean done = false;
 		//ladder.add(start); 
 	    	
@@ -110,10 +110,10 @@ public class Main {
 	    	Stack temp_stack = new Stack();
 	    
 	    	// Create Queue to keep track of BFS tree and words 
-	    	Queue<Stack> bfsQueue = new Queue<Stack>; 
+	    	Queue<Stack> bfsQueue = new LinkedList<Stack>; 
 	    	
 	    	bfsStack.push(start);
-	    	bfsQueue.enqueue(bfsStack);
+	    	bfsQueue.offer(bfsStack);
 	    	discovered.add(start);
 	    
 		Set<String> dict = makeDictionary();
@@ -123,7 +123,7 @@ public class Main {
 	    	while (!done && !bfsQueue.isEmpty()){
 			
 			//Remove the head of the queue
-			temp_stack = bfsQueue.dequeue();
+			temp_stack = bfsQueue.poll();
 			
 			/*
 			IF head == value, return found.
@@ -163,7 +163,7 @@ public class Main {
 	
 	public static void printLadder(ArrayList<String> ladder) {
 		System.out.println("This is the word ladder : ");
-		for (int i = 0; i<ladder.size;i++)
+		for (int i = 0; i<ladder.size();i++)
 			System.out.println(ladder.get(i));
 	}
 	// TODO
