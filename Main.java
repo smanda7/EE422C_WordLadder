@@ -118,12 +118,30 @@ public class Main {
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		
-		// Returned list should be ordered start to end.  Include start and end.
-		// Return empty list if no ladder.
-		// TODO some code
-		
-		return null; // replace this line later with real return
+		ArrayList current = new ArrayList<String>();
+		discovered.add(start);
+		if (start.equals(end)){
+			current.add(end);
+		} else {
+			String next = findNext(start);
+			if (!next.equals(""))
+				current.addAll(getWordLadderDFS(next,end));
+		}
+			
+		return current; // replace this line later with real return
+	}
+	
+	public static String findNext(String start){
+		int i =findIndex(start);
+		String out = "";
+		if (adjList[i]!=null)
+			for (int j:adjList[i]){
+				if (!discovered.contains(dict[j])){
+					out=dict[j];
+					break;
+				}
+			}
+		return out;
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
