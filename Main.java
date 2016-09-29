@@ -19,12 +19,14 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
-	ArrayList<String> discovered = new ArrayList<String>();
+	static Scanner kb;	// input Scanner for commands
+	static PrintStream ps;	// output file
+	static String[] dict;
+	static List<Integer>[] adjList;
+	static ArrayList<String> discovered = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
-		Scanner kb;	// input Scanner for commands
-		PrintStream ps;	// output file
 		// If arguments are specified, read/write from/to files instead of Std IO.
 		if (args.length != 0) {
 			kb = new Scanner(new File(args[0]));
@@ -35,20 +37,59 @@ public class Main {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
-		
-		// TODO methods to read in words, output ladder
+		ps.println(getWordLadderBFS("START","SMART"));
 	}
 	
+	/*	public static void dispAdj (){
+		for (int i=0;i<adjList.length;i++){
+		ps.print(dict[i] + " : ");
+		List<Integer> l= adjList[i];
+			if (l!=null){
+				for(int j:l){
+					ps.print(dict[j]+"  ");
+				}
+				ps.println();
+			}
+		}
+		ps.println(adjList.length);
+	}
+	*/
 	public static void initialize() {
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
-		String [] array1; 
-		
+		Set<String> st = makeDictionary();
+		dict = st.toArray(new String[st.size()]);
+		int s = dict.length;
+		adjList = new ArrayList[s];
+		for (int i=0;i<s;i++){
+			adjList[i]= new ArrayList<Integer>();
+			for (int j=i;j<s;j++){
+				if (linked(dict[i],dict[j])){
+					adjList[i].add(j);
+					adjList[j].add(i);
+				}
+			}
+		}
+	}
+	/**
+	 * Simply returns if two words are different by only one letter
+	 * @param w1 first word to compare
+	 * @param w2 second word to compare
+	 * @return boolean
+	 */
+	private static boolean linked(String w1, String w2){
+		int i;
+		for (i=0;i<w1.length();i++){
+			if (w1.charAt(i) !=w2.charAt(i)){
+				i++;
+			}
+		}
+		return i==1;
 	}
 	
 	/**
-	 * @param keyboard Scanner connected to System.in
+	 * @param keyboard Scanner connected to the input (System.in most of the time)
 	 * @return ArrayList of 2 Strings containing start word and end word. 
 	 * If command is /quit, return empty ArrayList. 
 	 */
@@ -77,21 +118,38 @@ public class Main {
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		
-		// Returned list should be ordered start to end.  Include start and end.
-		// Return empty list if no ladder.
-		// TODO some code
-		Set<String> dict = makeDictionary();
-		// TODO more code
-		
-		return null; // replace this line later with real return
+		ArrayList current = new ArrayList<String>();
+		discovered.add(start);
+		if (start.equals(end)){
+			current.add(end);
+		} else {
+			String next = findNext(start);
+			if (!next.equals(""))
+				current.addAll(getWordLadderDFS(next,end));
+		}
+			
+		return current; // replace this line later with real return
+	}
+	
+	public static String findNext(String start){
+		int i =findIndex(start);
+		String out = "";
+		if (adjList[i]!=null)
+			for (int j:adjList[i]){
+				if (!discovered.contains(dict[j])){
+					out=dict[j];
+					break;
+				}
+			}
+		return out;
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> found = new ArrayList;
+	    	ArrayList<String> found = new ArrayList<String>();
 	    	boolean done = false;
-		//ladder.add(start); 
+	    	int endIndex = findIndex(end);
+	    	int startIndex = findIndex(start);
 	    	
 	    	/*
 		* BFS starting at word start as source node
@@ -106,45 +164,59 @@ public class Main {
 		*/
 	    	
 	    	//create stacks to push and pop words from
-	    	Stack bfsStack = new Stack();
-	    	Stack temp_stack = new Stack();
+	    	Stack<Integer> bfsStack = new Stack<Integer>();
+	    	Stack<Integer> tempStack = new Stack<Integer>();
 	    
 	    	// Create Queue to keep track of BFS tree and words 
-	    	Queue<Stack> bfsQueue = new Queue<Stack>; 
-	    	
+	    	Queue<Stack> bfsQueue = new LinkedList<Stack>; 
 	    	bfsStack.push(start);
-	    	bfsQueue.enqueue(bfsStack);
-	    	discovered.add(start);
-	    
-		Set<String> dict = makeDictionary();
-		// TODO more code
+	    	bfsQueue.offer(bfsStack);
 	    	
 	    	//while Queue is not empty 
 	    	while (!done && !bfsQueue.isEmpty()){
 			
 			//Remove the head of the queue
-			temp_stack = bfsQueue.dequeue();
+			temp_stack = bfsQueue.poll();
 			
-			/*
-			IF head == value, return found.
-			IF head has been visited: {
-				discard the head.
-				go back to start of while loop.
-			}
-			ELSE {
-				mark head visited.
-				FOR EACH neighbor of head
-					IF neighbor has not been visited
-						mark neighbor's parent to be head (if parent != null)
-						add neighbor to queue.
-			*/
+			int head = tempStack.peek();
+	    		if ( head == endIndex) 
+	    			foundIndex.addAll(tempStack);
+	    		else if (discovered.contains(head)) {
+	    			tempStack.pop();
+	    		}
+	    		else {
+	    			discovered.add(head);
+	    			List<Integer> currentList = adjList[head];
+	    			if (currentList!=null)
+	    				for (int i:currentList)					//FOR EACH neighbor of head
+	    					if (!discovered.contains(i))	{									//IF neighbor has not been visited
+	    						tempStack.push(i);								//mark neighbor's parent to be head (if parent != null)
+	    						bfsQueue.offer(tempStack);												//add neighbor to queue.
+	    						tempStack.pop();
+	    					}
+	    		}
+	    	}
+	    	return toStringList(foundIndex);	
 	}
-
-		
-	    	//ladder.add(end);
-		return found; // replace this line later with real return
-	}
+   	    	
+    	public static int findIndex(String word){
+    		int result = -1;
+    		for (int i=0; i< dict.length;i++){
+    			if (dict[i].equals(word))
+    				result=i;
+    		}
+    		return result;
+    	}
     
+    	public static ArrayList<String> toStringList (List<Integer> index){
+    		ArrayList<String> out = new ArrayList<String>();
+    		for (int i:index){
+    			ps.println(i);
+    			out.add(dict[i]);
+    		}
+    		return out;
+    	}
+     
 	public static Set<String>  makeDictionary () {
 		Set<String> words = new HashSet<String>();
 		Scanner infile = null;
@@ -163,7 +235,7 @@ public class Main {
 	
 	public static void printLadder(ArrayList<String> ladder) {
 		System.out.println("This is the word ladder : ");
-		for (int i = 0; i<ladder.size;i++)
+		for (int i = 0; i<ladder.size();i++)
 			System.out.println(ladder.get(i));
 	}
 	// TODO
