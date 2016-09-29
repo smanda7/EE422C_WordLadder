@@ -38,7 +38,10 @@ public class Main {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
-		ps.println(getWordLadderBFS("START","SMART"));
+		//ps.println(getWordLadderBFS("START","SMART"));
+		ps.println(getWordLadderDFS("SMART","START"));
+		ps.println(DFSStack.size());
+		ps.println(dict.length);
 	}
 	
 	/*	public static void dispAdj (){
@@ -65,7 +68,9 @@ public class Main {
 		adjList = new ArrayList[s];
 		for (int i=0;i<s;i++){
 			adjList[i]= new ArrayList<Integer>();
-			for (int j=i;j<s;j++){
+		}
+		for (int i=0;i<s;i++){
+			for (int j=i; j<s; j++){
 				if (linked(dict[i],dict[j])){
 					adjList[i].add(j);
 					adjList[j].add(i);
@@ -80,13 +85,13 @@ public class Main {
 	 * @return boolean
 	 */
 	private static boolean linked(String w1, String w2){
-		int i;
+		int j = 0;;
 		for (i=0;i<w1.length();i++){
 			if (w1.charAt(i) !=w2.charAt(i)){
-				i++;
+				j++;
 			}
 		}
-		return i==1;
+		return j==1;
 	}
 	
 	/**
@@ -123,20 +128,24 @@ public class Main {
 		discovered.clear();
 		recDFS(start, end);
 		
-		return DFSStack.toArray().reverse(); // replace this line later with real return
+		ArrayList<String> dfsArrayList = new ArrayList<String>();
+		dfsArrayList.addAll(DFSStack);
+		return dfsArrayList; 
+	
 	}
 	
 	public static void recDFS (String start,String end) {
 		DFSStack.push(start);
 		if (start.equals(end)){
-			DFSStack.push(end);
+			//do nothing
 		}
 		else if (DFSStack.empty()){
 			//do nothing
 		}
-		else if (deadEnd(start)){
+		else if (findNext(start).equals("")){
 			discovered.add(DFSStack.pop());
-			recDFS(DFSStack.pop(), end);
+			if (!DFSStack.empty())
+				recDFS(DFSStack.pop(), end);
 		}
 		else{
 			discovered.add(start);
@@ -228,7 +237,7 @@ public class Main {
     			out.add(dict[i]);
     		}
     		return out;
-    	}
+	}
      
 	public static Set<String>  makeDictionary () {
 		Set<String> words = new HashSet<String>();
@@ -247,9 +256,16 @@ public class Main {
 	}
 	
 	public static void printLadder(ArrayList<String> ladder) {
-		System.out.println("This is the word ladder : ");
-		for (int i = 0; i<ladder.size();i++)
-			System.out.println(ladder.get(i));
+		int ladderLength = ladder.size();
+		if (ladderLength < 2){
+			System.out.println("no word ladder can be found between " + start +" and " + end + ".");
+		}
+		else{
+			System.out.println("This is the word ladder : ");
+			for (int i = 0; i<ladderLength;i++){
+				System.out.println(ladder.get(i));
+			}
+		}
 	}
 	// TODO
 	// Other private static methods here
