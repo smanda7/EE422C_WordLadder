@@ -143,7 +143,7 @@ public class Main {
 	    	int prev_node[] = new int[dict.length];
 	    
 	    	// Create Queue to keep track of BFS tree and words 
-	    	Queue bfsQueue = new LinkedList(); 
+	    	Queue bfsQueue<Integer> = new LinkedList<Integer>(); 
             
             // get the node number for start and end words
             for( int i = 0; i < dict.length; i++) {
