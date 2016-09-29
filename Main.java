@@ -19,12 +19,14 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
-	ArrayList<String> discovered = new ArrayList<String>();
+	static Scanner kb;	// input Scanner for commands
+	static PrintStream ps;	// output file
+	static String[] dict;
+	static List<Integer>[] adjList;
+	static ArrayList<String> discovered = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		
-		Scanner kb;	// input Scanner for commands
-		PrintStream ps;	// output file
 		// If arguments are specified, read/write from/to files instead of Std IO.
 		if (args.length != 0) {
 			kb = new Scanner(new File(args[0]));
@@ -43,12 +45,38 @@ public class Main {
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
-		String [] array1; 
-		
+		Set<String> st = makeDictionary();
+		dict = st.toArray(new String[st.size()]);
+		int s = dict.length;
+		adjList = new ArrayList[s];
+		// TODO more code
+		for (int i=0;i<s;i++){
+			for (int j=i;j<s;j++){
+				if (linked(dict[i],dict[j])){
+					adjList[i].add(j);
+					adjList[j].add(i);
+				}
+			}
+		}
+	}
+	/**
+	 * Simply returns if two words are different by only one letter
+	 * @param w1 first word to compare
+	 * @param w2 second word to compare
+	 * @return boolean
+	 */
+	private static boolean linked(String w1, String w2){
+		int i;
+		for (i=0;i<w1.length();i++){
+			if (w1.charAt(i) !=w2.charAt(i)){
+				i++;
+			}
+		}
+		return i==1;
 	}
 	
 	/**
-	 * @param keyboard Scanner connected to System.in
+	 * @param keyboard Scanner connected to the input (System.in most of the time)
 	 * @return ArrayList of 2 Strings containing start word and end word. 
 	 * If command is /quit, return empty ArrayList. 
 	 */
@@ -81,15 +109,13 @@ public class Main {
 		// Returned list should be ordered start to end.  Include start and end.
 		// Return empty list if no ladder.
 		// TODO some code
-		Set<String> dict = makeDictionary();
-		// TODO more code
 		
 		return null; // replace this line later with real return
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> found = new ArrayList;
+	    	ArrayList<String> found = new ArrayList<String>();
 	    	boolean done = false;
 		//ladder.add(start); 
 	    	
@@ -106,25 +132,67 @@ public class Main {
 		*/
 	    	
 	    	//create stacks to push and pop words from
-	    	Stack bfsStack = new Stack();
-	    	Stack temp_stack = new Stack();
+	    	//Stack bfsStack = new Stack();
+	    	//Stack temp_stack = new Stack();
+	    	int temp_node = 0;
+
+	    	int start_node = 0;
+	    	int end_node = 0;
+
+	    	boolean node_visited[] = new boolean[dict.length];
+	    	int prev_node[] = new int[dict.length];
 	    
 	    	// Create Queue to keep track of BFS tree and words 
-	    	Queue<Stack> bfsQueue = new Queue<Stack>; 
+	    	Queue bfsQueue = new LinkedList(); 
+            
+            // get the node number for start and end words
+            for(i = 0; i < dict.length; i++) {
+            	 if (dict[i] == start) {
+            	 	start_node = i;
+            	 }
+
+            	 if (dict[i] == end) {
+            	 	end_node = i;
+            	 }
+
+                  node_visited[i] = false;
+                  prev_node[i] = -1;
+            }
+
 	    	
-	    	bfsStack.push(start);
-	    	bfsQueue.enqueue(bfsStack);
-	    	discovered.add(start);
+	    	//bfsStack.push(start_node);
+	    	bfsQueue.offer(start_node);
 	    
-		Set<String> dict = makeDictionary();
+	    
+		// Set<String> dict = makeDictionary();
 		// TODO more code
 	    	
 	    	//while Queue is not empty 
-	    	while (!done && !bfsQueue.isEmpty()){
+	    while (!done && !bfsQueue.isEmpty()) {
 			
 			//Remove the head of the queue
-			temp_stack = bfsQueue.dequeue();
+			//temp_stack = bfsQueue.poll();
+			//temp_node =  (int) temp_stack.pop();
+			temp_node = bfsQueue.poll();
+
+			if(temp_node == end_node) {
+                 
+                 done = true;
+				// end node found. trace back and get the path
+				discovered.add(end);
+
+				int curNode = end_node;
+				while(curNode != start_node) {
+					curNode = prev_node[curNode];
+					discovered.add(dict[curNode]);
+				}
+            
+            //reverse the result list to have the start first
+    		Collections.reverse(discovered);
+    		return discovered;
 			
+			}
+
 			/*
 			IF head == value, return found.
 			IF head has been visited: {
@@ -138,11 +206,32 @@ public class Main {
 						mark neighbor's parent to be head (if parent != null)
 						add neighbor to queue.
 			*/
-	}
+
+			if(!node_visited[temp_node]) {
+
+                 for(int j =  0; j < dict.length; j++)  {
+
+                 	   if (j == temp_node) continue;
+
+                 	   if( node_visited[j])  continue;   // this node is already visited
+
+                       // check if j is a neighbor of temp_node
+                 	   if(adjList[temp_node].contains(j)) {
+                 	   	     //temp_stack.push(j);
+	    	                 bfsQueue.offer(temp_node);
+	    	                 prev_node[j] = temp_node;
+                 	   }
+                 }
+
+
+			}
+
+			
+	    }  // end of while loop
 
 		
-	    	//ladder.add(end);
-		return found; // replace this line later with real return
+	   // end not found
+		return discovered;
 	}
     
 	public static Set<String>  makeDictionary () {
@@ -161,11 +250,18 @@ public class Main {
 		return words;
 	}
 	
-	public static void printLadder(ArrayList<String> ladder) {
-		System.out.println("This is the word ladder : ");
-		for (int i = 0; i<ladder.size;i++)
-			System.out.println(ladder.get(i));
+
+public static void printLadder(ArrayList<String> ladder, String start, String end) {
+		int ladderLength = ladder.size();
+		if (ladderLength < 2){
+			System.out.println("no word ladder can be found between " + start +" and " + end + ".");
+		}
+		else{
+			System.out.println("This is the word ladder : ");
+			for (int i = 0; i<ladder.size;i++){
+				System.out.println(ladder.get(i));
+			}
+		}
 	}
-	// TODO
-	// Other private static methods here
+	
 }
