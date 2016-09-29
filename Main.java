@@ -146,7 +146,7 @@ public class Main {
 	    	Queue bfsQueue = new LinkedList(); 
             
             // get the node number for start and end words
-            for(i = 0; i < dict.length; i++) {
+            for( int i = 0; i < dict.length; i++) {
             	 if (dict[i] == start) {
             	 	start_node = i;
             	 }
