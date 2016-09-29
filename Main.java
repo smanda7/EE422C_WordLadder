@@ -37,10 +37,23 @@ public class Main {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
-		
-		// TODO methods to read in words, output ladder
+		ps.println(getWordLadderBFS("START","SMART"));
 	}
 	
+	/*	public static void dispAdj (){
+		for (int i=0;i<adjList.length;i++){
+		ps.print(dict[i] + " : ");
+		List<Integer> l= adjList[i];
+			if (l!=null){
+				for(int j:l){
+					ps.print(dict[j]+"  ");
+				}
+				ps.println();
+			}
+		}
+		ps.println(adjList.length);
+	}
+	*/
 	public static void initialize() {
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
@@ -49,8 +62,8 @@ public class Main {
 		dict = st.toArray(new String[st.size()]);
 		int s = dict.length;
 		adjList = new ArrayList[s];
-		// TODO more code
 		for (int i=0;i<s;i++){
+			adjList[i]= new ArrayList<Integer>();
 			for (int j=i;j<s;j++){
 				if (linked(dict[i],dict[j])){
 					adjList[i].add(j);
@@ -117,7 +130,8 @@ public class Main {
 		
 	    	ArrayList<String> found = new ArrayList<String>();
 	    	boolean done = false;
-		//ladder.add(start); 
+	    	int endIndex = findIndex(end);
+	    	int startIndex = findIndex(start);
 	    	
 	    	/*
 		* BFS starting at word start as source node
@@ -132,18 +146,13 @@ public class Main {
 		*/
 	    	
 	    	//create stacks to push and pop words from
-	    	Stack bfsStack = new Stack();
-	    	Stack temp_stack = new Stack();
+	    	Stack<Integer> bfsStack = new Stack<Integer>();
+	    	Stack<Integer> tempStack = new Stack<Integer>();
 	    
 	    	// Create Queue to keep track of BFS tree and words 
 	    	Queue<Stack> bfsQueue = new LinkedList<Stack>; 
-	    	
 	    	bfsStack.push(start);
 	    	bfsQueue.offer(bfsStack);
-	    	discovered.add(start);
-	    
-		Set<String> dict = makeDictionary();
-		// TODO more code
 	    	
 	    	//while Queue is not empty 
 	    	while (!done && !bfsQueue.isEmpty()){
@@ -151,26 +160,45 @@ public class Main {
 			//Remove the head of the queue
 			temp_stack = bfsQueue.poll();
 			
-			/*
-			IF head == value, return found.
-			IF head has been visited: {
-				discard the head.
-				go back to start of while loop.
-			}
-			ELSE {
-				mark head visited.
-				FOR EACH neighbor of head
-					IF neighbor has not been visited
-						mark neighbor's parent to be head (if parent != null)
-						add neighbor to queue.
-			*/
+			int head = tempStack.peek();
+	    		if ( head == endIndex) 
+	    			foundIndex.addAll(tempStack);
+	    		else if (discovered.contains(head)) {
+	    			tempStack.pop();
+	    		}
+	    		else {
+	    			discovered.add(head);
+	    			List<Integer> currentList = adjList[head];
+	    			if (currentList!=null)
+	    				for (int i:currentList)					//FOR EACH neighbor of head
+	    					if (!discovered.contains(i))	{									//IF neighbor has not been visited
+	    						tempStack.push(i);								//mark neighbor's parent to be head (if parent != null)
+	    						bfsQueue.offer(tempStack);												//add neighbor to queue.
+	    						tempStack.pop();
+	    					}
+	    		}
+	    	}
+	    	return toStringList(foundIndex);	
 	}
-
-		
-	    	//ladder.add(end);
-		return found; // replace this line later with real return
-	}
+   	    	
+    	public static int findIndex(String word){
+    		int result = -1;
+    		for (int i=0; i< dict.length;i++){
+    			if (dict[i].equals(word))
+    				result=i;
+    		}
+    		return result;
+    	}
     
+    	public static ArrayList<String> toStringList (List<Integer> index){
+    		ArrayList<String> out = new ArrayList<String>();
+    		for (int i:index){
+    			ps.println(i);
+    			out.add(dict[i]);
+    		}
+    		return out;
+    	}
+     
 	public static Set<String>  makeDictionary () {
 		Set<String> words = new HashSet<String>();
 		Scanner infile = null;
