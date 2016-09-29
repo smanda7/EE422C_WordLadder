@@ -1,4 +1,4 @@
-/* WORD LADDER Main.java
+* WORD LADDER Main.java
  * EE422C Project 3 submission by
  * Siva Manda
  * sm48525
@@ -12,11 +12,11 @@
  */
 
 
-package assignment3;
+//package assignment3;
 import java.util.*;
 import java.io.*;
 
-public class Main {
+public class Main_ver101 {
 	
 	// static variables and constants only here.
 	static Scanner kb;	// input Scanner for commands
@@ -37,7 +37,7 @@ public class Main {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
-		
+		ps.println(getWordLadderBFS("START","SMART"));
 		// TODO methods to read in words, output ladder
 	}
 	
@@ -143,10 +143,10 @@ public class Main {
 	    	int prev_node[] = new int[dict.length];
 	    
 	    	// Create Queue to keep track of BFS tree and words 
-	    	Queue bfsQueue<Integer> = new LinkedList<Integer>(); 
+	    	Queue bfsQueue = new LinkedList(); 
             
             // get the node number for start and end words
-            for( int i = 0; i < dict.length; i++) {
+            for(int i = 0; i < dict.length; i++) {
             	 if (dict[i] == start) {
             	 	start_node = i;
             	 }
@@ -173,7 +173,7 @@ public class Main {
 			//Remove the head of the queue
 			//temp_stack = bfsQueue.poll();
 			//temp_node =  (int) temp_stack.pop();
-			temp_node = bfsQueue.poll();
+			temp_node = (int)bfsQueue.poll();
 
 			if(temp_node == end_node) {
                  
@@ -258,7 +258,7 @@ public static void printLadder(ArrayList<String> ladder, String start, String en
 		}
 		else{
 			System.out.println("This is the word ladder : ");
-			for (int i = 0; i<ladder.size;i++){
+			for (int i = 0; i<ladderLength;i++){
 				System.out.println(ladder.get(i));
 			}
 		}
