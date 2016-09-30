@@ -224,7 +224,7 @@ public class Main {
 		    	int start_node = 0;
 		    	int end_node = 0;
 
-	            System.out.println(" Dict length = " + dict.length);
+	            //System.out.println(" Dict length = " + dict.length);
 
 		    	boolean node_visited[] = new boolean[dict.length];
 		    	int prev_node[] = new int[dict.length];
