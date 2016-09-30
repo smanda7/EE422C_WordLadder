@@ -358,10 +358,8 @@ public class Main {
 
 	public static void printLadder(ArrayList<String> ladder) {
 			int ladderLength = ladder.size();
-			String start = ladder.get(0);
-			String end = ladder.get(ladder.size() -1);
 			if (ladderLength < 2){
-				System.out.println("no word ladder can be found between " + start +" and " + end + ".");
+				System.out.println("no word ladder can be found between " + start.toLowerCase() +" and " + end.toLowerCase() + ".");
 			}
 			else{
 				System.out.println("a " + (ladderLength-2) + "-" + "rung word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
