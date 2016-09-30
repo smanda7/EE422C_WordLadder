@@ -1,4 +1,17 @@
-//package assignment3;
+/* WORD LADDER Main.java
+ * EE422C Project 3 submission by
+ * Siva Manda
+ * sm48525
+ * 16480
+ * Clement Pardon
+ * cp34735
+ * 16460
+ * Slip days used: <0>
+ * Git URL: https://github.com/smanda7/EE422C_WordLadder
+ * Fall 2016
+ */
+
+package assignment3;
 
 import java.util.*;
 import java.io.*;
