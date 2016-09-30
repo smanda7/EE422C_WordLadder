@@ -1,31 +1,24 @@
-* WORD LADDER Main.java
- * EE422C Project 3 submission by
- * Siva Manda
- * sm48525
- * 16480
- * Clement Pardon
- * cp34735
- * 16460
- * Slip days used: <0>
- * Git URL: https://github.com/smanda7/EE422C_WordLadder
- * Fall 2016
- */
-
-
 //package assignment3;
+
 import java.util.*;
 import java.io.*;
 
-public class Main_ver101 {
-	
+public class Main {
+
 	// static variables and constants only here.
 	static Scanner kb;	// input Scanner for commands
 	static PrintStream ps;	// output file
 	static String[] dict;
 	static List<Integer>[] adjList;
 	static ArrayList<String> discovered = new ArrayList<String>();
+	static ArrayList<String>  respath = new ArrayList<String>();
+	static Stack<String> DFSStack = new Stack<String>();
+
+	
 	
 	public static void main(String[] args) throws Exception {
+
+		ArrayList<String> ladder = new ArrayList<String>();
 		
 		// If arguments are specified, read/write from/to files instead of Std IO.
 		if (args.length != 0) {
@@ -37,19 +30,37 @@ public class Main_ver101 {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
-		ps.println(getWordLadderBFS("START","SMART"));
-		// TODO methods to read in words, output ladder
+		//ps.println(getWordLadderDFS("HEART","TEART"));
+
+		String start = "honey";
+		String end = "money";
+
+        start = start.toUpperCase();
+        end = end.toUpperCase();
+
+		//ladder = getWordLadderDFS(start, end);
+		ladder = getWordLadderBFS(start, end);
+
+		//ps.println(DFSStack.size());
+		//ps.println(dict.length);
+
+       printLadder(ladder, start, end);
+
+		
 	}
 	
 	public static void initialize() {
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
+		
 		Set<String> st = makeDictionary();
 		dict = st.toArray(new String[st.size()]);
 		int s = dict.length;
 		adjList = new ArrayList[s];
 		// TODO more code
+		for (int i=0;i<s;i++)
+			adjList[i]= new ArrayList();
 		for (int i=0;i<s;i++){
 			for (int j=i;j<s;j++){
 				if (linked(dict[i],dict[j])){
@@ -66,13 +77,13 @@ public class Main_ver101 {
 	 * @return boolean
 	 */
 	private static boolean linked(String w1, String w2){
-		int i;
-		for (i=0;i<w1.length();i++){
+		int j=0;
+		for (int i=0;i<w1.length();i++){
 			if (w1.charAt(i) !=w2.charAt(i)){
-				i++;
+				j++;
 			}
 		}
-		return i==1;
+		return j==1;
 	}
 	
 	/**
@@ -109,13 +120,61 @@ public class Main_ver101 {
 		// Returned list should be ordered start to end.  Include start and end.
 		// Return empty list if no ladder.
 		// TODO some code
-		
-		return null; // replace this line later with real return
+		DFSStack.clear();
+		discovered.clear();
+
+		// Check if start and end are linked.
+        if(linked(start, end)) {
+        	discovered.add(start);
+        	discovered.add(end);
+        	return(discovered);
+        }
+
+        
+		recDFS(start, end);
+
+		ArrayList<String> dfsArrayList = new ArrayList<String>();
+		dfsArrayList.addAll(DFSStack);
+		return dfsArrayList; 
 	}
+
+	public static void recDFS (String start,String end) {
+		DFSStack.push(start);
+		if (start.equals(end)){
+			//do nothing
+		}
+		else if (DFSStack.empty()){
+			//do nothing
+		}
+		else if (findNext(start).equals("")){
+			discovered.add(DFSStack.pop());
+			if (!DFSStack.empty())
+				recDFS(DFSStack.pop(), end);
+		}
+		else{
+			discovered.add(start);
+			recDFS(findNext(start), end);
+		}	
+	}
+	
+	public static String findNext(String start){
+		int i =findIndex(start);
+		String out = "";
+		if (adjList[i]!=null)
+			for (int j:adjList[i]){
+				if (!discovered.contains(dict[j])){
+					out=dict[j];
+					break;
+				}
+			}
+		return out;
+	}
+
+
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-	    	ArrayList<String> found = new ArrayList<String>();
+	    	//ArrayList<String> found = new ArrayList<String>();
 	    	boolean done = false;
 		//ladder.add(start); 
 	    	
@@ -131,13 +190,19 @@ public class Main_ver101 {
 		* Ex: Queue<Stack> 
 		*/
 	    	
-	    	//create stacks to push and pop words from
-	    	//Stack bfsStack = new Stack();
-	    	//Stack temp_stack = new Stack();
+         // Check if start and end are linked.
+         if(linked(start, end)) {
+        	respath.add(start);
+        	respath.add(end);
+        	return(respath);
+         }
+
 	    	int temp_node = 0;
 
 	    	int start_node = 0;
 	    	int end_node = 0;
+
+            System.out.println(" Dict length = " + dict.length);
 
 	    	boolean node_visited[] = new boolean[dict.length];
 	    	int prev_node[] = new int[dict.length];
@@ -147,49 +212,46 @@ public class Main_ver101 {
             
             // get the node number for start and end words
             for(int i = 0; i < dict.length; i++) {
-            	 if (dict[i] == start) {
-            	 	start_node = i;
-            	 }
-
-            	 if (dict[i] == end) {
-            	 	end_node = i;
-            	 }
 
                   node_visited[i] = false;
                   prev_node[i] = -1;
             }
 
+            start_node = findIndex(start);
+            end_node = findIndex(end);
+
+           // System.out.println(" Start_node = " + start_node);
+           // System.out.println(" end_node = " + end_node);
+
 	    	
 	    	//bfsStack.push(start_node);
 	    	bfsQueue.offer(start_node);
 	    
-	    
-		// Set<String> dict = makeDictionary();
-		// TODO more code
 	    	
 	    	//while Queue is not empty 
 	    while (!done && !bfsQueue.isEmpty()) {
 			
 			//Remove the head of the queue
-			//temp_stack = bfsQueue.poll();
-			//temp_node =  (int) temp_stack.pop();
+			
 			temp_node = (int)bfsQueue.poll();
+
+			// System.out.println(" temp_node = " + temp_node);
 
 			if(temp_node == end_node) {
                  
                  done = true;
 				// end node found. trace back and get the path
-				discovered.add(end);
+				respath.add(end);
 
 				int curNode = end_node;
 				while(curNode != start_node) {
 					curNode = prev_node[curNode];
-					discovered.add(dict[curNode]);
+					respath.add(dict[curNode]);
 				}
             
-            //reverse the result list to have the start first
-    		Collections.reverse(discovered);
-    		return discovered;
+            //reverse the result list to have the start  first
+    		Collections.reverse(respath);
+    		return respath;
 			
 			}
 
@@ -209,6 +271,8 @@ public class Main_ver101 {
 
 			if(!node_visited[temp_node]) {
 
+				node_visited[temp_node] = true;
+
                  for(int j =  0; j < dict.length; j++)  {
 
                  	   if (j == temp_node) continue;
@@ -218,7 +282,7 @@ public class Main_ver101 {
                        // check if j is a neighbor of temp_node
                  	   if(adjList[temp_node].contains(j)) {
                  	   	     //temp_stack.push(j);
-	    	                 bfsQueue.offer(temp_node);
+	    	                 bfsQueue.offer(j);
 	    	                 prev_node[j] = temp_node;
                  	   }
                  }
@@ -231,7 +295,25 @@ public class Main_ver101 {
 
 		
 	   // end not found
-		return discovered;
+		return respath;
+	}
+
+	public static int findIndex(String word){
+    		int result = -1;
+    		for (int i=0; i< dict.length;i++){
+    			if (dict[i].equals(word))
+    				result=i;
+    		}
+    		return result;
+    	}
+	
+	public static ArrayList<String> toStringList (List<Integer> index){
+		ArrayList<String> out = new ArrayList<String>();
+		for (int i:index){
+			ps.println(i);
+			out.add(dict[i]);
+		}
+		return out;
 	}
     
 	public static Set<String>  makeDictionary () {
@@ -239,6 +321,7 @@ public class Main_ver101 {
 		Scanner infile = null;
 		try {
 			infile = new Scanner (new File("five_letter_words.txt"));
+			//infile = new Scanner (new File("short_dict.txt"));
 		} catch (FileNotFoundException e) {
 			System.out.println("Dictionary File not Found!");
 			e.printStackTrace();
@@ -257,11 +340,12 @@ public static void printLadder(ArrayList<String> ladder, String start, String en
 			System.out.println("no word ladder can be found between " + start +" and " + end + ".");
 		}
 		else{
-			System.out.println("This is the word ladder : ");
+			System.out.println("a " + (ladderLength-2) + "-" + "rung word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
 			for (int i = 0; i<ladderLength;i++){
-				System.out.println(ladder.get(i));
+				System.out.println(ladder.get(i).toLowerCase());
 			}
 		}
 	}
 	
+
 }
