@@ -6,7 +6,7 @@
  * Clement Pardon
  * cp34735
  * 16460
- * Slip days used: <0>
+ * Slip days used: <1> out of 3
  * Git URL: https://github.com/smanda7/EE422C_WordLadder
  * Fall 2016
  */
